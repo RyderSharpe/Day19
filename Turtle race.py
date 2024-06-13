@@ -1,7 +1,7 @@
-# TODO - pop up asks you to bet who will win race (enter a colour).
+# TODO - Pop up asks you to bet who will win race (enter a colour).
 # TODO - Turts line up in starting positions.
 # TODO - Turts start racing
-# TODO - first to cross finish line prints out what colour won
+# TODO - First to cross finish line prints out what colour won
 
 from turtle import Turtle, Screen
 import random
@@ -11,24 +11,31 @@ screen.bgcolor("DeepSkyBlue")
 screen.setup(750, 450)
 # Set the background image
 try:
-    screen.bgpic('C:/Users/rsharpe/PycharmProjects/day18/b.gif')
+    screen.bgpic('C:/Users/rsharpe/PycharmProjects/day19/r.gif')
 except Exception as e:
     print(f"Error loading background image: {e}")
 
-colors = ["red", "orange", "yellow", "green", "blue", "purple", "cyan", "black"]
-turts = ["turt_red", "turt_orange", "turt_yellow", "turt_green", "turt_blue", "turt_purple", "turt_cyan", "turt_black"]
+start_line = -360
+finish_line = 320
+
+screen.title("Welcome to the turtle race!")
+colors = ["red", "orange", "yellow", "green", "blue", "purple", "cyan", "white"]
+turts = ["turt_red", "turt_orange", "turt_yellow", "turt_green", "turt_blue", "turt_purple", "turt_cyan", "turt_white"]
+all_turtles = []
 
 def players_line_up():
-    x_axis = -340
+    x_axis = start_line
     y_axis = -160
     for turt_name in turts:
-        player = Turtle(shape="turtle")
-        player.shapesize(stretch_wid=2, stretch_len=2, outline=1)
-        player.color(colors[turts.index(turt_name)])
-        player.penup()
-        player.goto(x=x_axis, y=y_axis)
+        new_turtle = Turtle(shape="turtle")
+        new_turtle.shapesize(stretch_wid=2, stretch_len=2, outline=1)
+        new_turtle.color(colors[turts.index(turt_name)])
+        new_turtle.penup()
+        new_turtle.speed(9)
+        new_turtle.goto(x=x_axis, y=y_axis)
         y_axis += 43
         print(turt_name)
+        all_turtles.append(new_turtle)
 
 def validate_user_color(prompt="Which Turt will win the race? Enter a colour"):
   """
@@ -45,21 +52,27 @@ def validate_user_color(prompt="Which Turt will win the race? Enter a colour"):
     else:
       print("Invalid color. Please choose from:", colors)
 
-
-# is_race_on = False
-# user_bet = validate_user_color()
-# if user_bet:
-#     is_race_on = True
-#
-# while is_race_on:
-#     random.randint(0,10)
-
-
 players_line_up()
-validate_user_color()
+user_bet = validate_user_color()
 
+is_race_on = False  # Initialize is_race_on to False
+
+if user_bet:
+    is_race_on = True
+
+while is_race_on:
+    for turtle in all_turtles:
+        rand_distance = random.randint(0, 10)
+        turtle.forward(rand_distance)
+        if turtle.xcor() >= finish_line:  # Use >= for finish line comparison
+            winning_color = turtle.pencolor()
+            if winning_color == user_bet:
+                print(f"{winning_color} won! You won the bet!")
+            else:
+                print(f"{winning_color} won. You lost the bet.")
+            is_race_on = False  # Set is_race_on to False to stop the loop
+            break  # Exit the for loop once the race is over
 
 # Keep the window open until closed manually
 screen.exitonclick()
-
 
